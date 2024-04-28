@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+</head>
+<style>
+body{
+    font-family: Arial, sans-serif;
+}
+
+.container{
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1{
+    text-align: center;
+}
+
+.filters{
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.filter{
+    flex: 1;
+    margin-right: 10px;
+}
+
+.filter select{
+    width: 100%;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th, table td{
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+
+.pagination{
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination button{
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+
+.pagination button.disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+</style>
+<body>
+    <div class="container">
+        <h1>Employee Management System</h1>
+        <div class="filters">
+            <div class="filter">
+                <label for="department-filter">Filter by department :</label>
+                <select id="department-filter">
+                    <option value="">--select department--</option>
+                    <option value="hr">HR</option>
+                    <option value="finance">Finance</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="engineering">Engineering</option>
+                    <option value="operations">OPerations</option>
+                </select>
+            </div>
+            <div class="filter">
+                <label for="gender-filter">filter by gender:</label>
+                <select id="gender-filter">
+                    <option value="">--select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            <div class="filter">
+                <label for="sort-order">Sort by salary:</label>
+                <select id="sort-order">
+                    <option value="">--select order</option>
+                    <option value="asc">Low to High</option>
+                    <option value="dec">High to low</option>
+                </select>
+            </div>
+        </div>
+        <table id="employee-table">
+            <thead>
+                <tr>
+                    <th>S.no</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Department</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody id="employee-list"></tbody>
+        </table>
+        <div class="pagination">
+            <button id="Prev-btn" disabled>Previous</button>
+            <button id="next-btn">Next</button>
+        </div>
+    </div>
+</body>
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+    const departmentFilter = document.getElementById("department-filter");
+    const genderFilter = document.getElementById("gender-filter");
+    const sortOrder = document.getElementById("sort-order");
+    const preBtn = document.getElementById("pre-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const employeeListt = document.getElementById("employee-list");
+
+    let currentPage = 1;
+    let totalEmployees = 0;
+    const limit = 10;
+
+    function fetchEmployees(){
+        const url='https://dbioz2ek0e.execute-api.ap-south-1.amazonaws.com/mockapi/get-employees?page=${currentPage}&limit=${limit}'
+        fetch(url)
+        .then(Response => Response.json())
+        .then(data =>{
+            totalEmployees = data.total;
+            displayEmployees(data.employees);
+        })
+        .catch(error => console.error("Error Feching employeees", error));
+    }
+    function displayEmployees(employees){
+        employeesList.innerHtml = ""
+        employees.foreach((employee,index)=>{
+            const row = document.creatElement("tr");
+        })
+    }
+
+    function handleFilterAndSort(){
+        currentPage = 1;
+        fetchEmployees();
+    }
+
+    departmentFilter.addEventListener("change", HandlelfilterAndSort);
+    genderFilter.addEventListener("change", HandlelfilterAndSort);
+    sortOrder.addEventListener("change", HandlelfilterAndSort);
+
+    prevBtn.addEventListener("click",function(){
+        if(currentPage > 1){
+            currentPage--;
+            fetchEmployees();
+        }
+    })
+
+    nextBtn.addEventListener("click",function(){
+        if(currentPage > math.ceil(totalEmployees/limit)){
+            currentPage++;
+            fetchEmployees();
+        }
+    })
+    fetchEmployees()
+})
+</script>
+</html>
